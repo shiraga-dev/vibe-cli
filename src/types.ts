@@ -36,46 +36,46 @@ export type Plugin = {
   onFork?: (ctx: ForkContext, config: Config) => Promise<void> | void;
 }
 
-export type ExtendedChain = Chain & {
+export type PartialChain = Partial<Chain>;
+export type ExtendedChain = PartialChain & {
   fork?: {
     chainId?: number;
     port?: number;
     blockNumber?: number;
     blockTime?: number;
+    deploy?: Array<SolRef | string>;
     onFork?: Array<SolRef | string>;
     onDeploy?: Array<SolRef | string>;
-  }
+  };
+  deploy?: Array<SolRef | string>;
   onDeploy?: Array<SolRef | string>;
 }
 
-export type SolRef = {
+export type SolRef<A extends readonly unknown[] = readonly unknown[]> = {
   name?: string;
   src: string;
-  args?: {} | any[];
+  args?: A;
 };
+
+export type WithArgs<A> = { args: A };
 
 export interface Config {
   privateKey?: string;
   paths?: {
-    src: string;
-    out: string;
-    scripts: string;
-    deployed: string | string[];
+    src?: string;
+    out?: string;
+    scripts?: string;
+    deployed?: string | string[];
+    vibe?: string;
   };
-  chains?: { [key: string]: ExtendedChain }
-  contracts?: { [key: string]: SolRef }
-  scripts?: { [key: string]: SolRef }
-  compile?: Array<SolRef | string>
-  deploy?: { [key: string]: Array<SolRef | string> }
-  fork?: {
-    privateKey?: string;
-    deploy?: { [key: string]: Array<SolRef | string> }
-  }
+  contracts?: Record<string, SolRef>;
+  scripts?: Record<string, SolRef>;
+  chains?: Record<string, ExtendedChain>;
   optimizer?: {
-    enabled: boolean;
-    runs: number;
+    enabled?: boolean;
+    runs?: number;
   };
   verbosity?: number;
   via_ir?: boolean;
-  plugins?: Plugin[];
+  plugins?: string[];
 }

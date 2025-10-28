@@ -15,6 +15,9 @@ async function main() {
     case "compile":
       await (await import("./src/compile")).main();
       break;
+    case "generate":
+      await (await import("./src/generateTypes")).main();
+      break;
     case "check":
       await (await import("./src/check")).main();
       break;

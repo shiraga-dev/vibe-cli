@@ -11,7 +11,7 @@ vibe-cli allows you to easily manage and orchestrate forked chain environments, 
 ## Production Roadmap
 - ✅ Initialization 
 - ✅ Compilation
-- 🚧 Type generation
+- ✅ Type generation
 - 🚧 Forking
 - 🚧 Deploying
 - 🚧 Funding

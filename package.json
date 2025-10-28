@@ -7,22 +7,22 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "private": true,
+  "private": false,
   "devDependencies": {
     "@types/bun": "latest",
     "@types/adm-zip": "^0.5.7",
     "@types/follow-redirects": "^1.14.4"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   },
   "bin": {
-    "vibe2": "./src/index.ts"
+    "vibe3": "./index.ts"
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
-    "follow-redirects": "^1.15.9",
-    "inquirer": "^12.8.2",
-    "viem": "^2.33.0"
+    "follow-redirects": "^1.15.11",
+    "inquirer": "^12.10.0",
+    "viem": "^2.38.4"
   }
 }

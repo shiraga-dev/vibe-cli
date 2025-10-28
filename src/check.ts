@@ -8,7 +8,7 @@ export async function main() {
   const args = process.argv.slice(3);
   for (let i = 0; i < args.length; i++) {
     if ((args[i] === '--chain' || args[i] === '-c') && args[i + 1]) {
-      rpcUrl = `--fork-url ${(config.chains || {})[args[i + 1] as keyof typeof config.chains]?.rpcUrls.default.http[0]}`;
+      rpcUrl = `--fork-url ${(config.chains || {})[args[i + 1] as keyof typeof config.chains]?.rpcUrls?.default.http[0]}`;
       break;
     }
   }

@@ -7,6 +7,7 @@ export default <Config> {
     out: 'out',
     scripts: 'script',
     deployed: 'deployed',
+    vibe: 'vibe',
   },
   chains: {
     ...(await import('viem/chains')).default,

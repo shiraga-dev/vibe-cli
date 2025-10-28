@@ -1,12 +1,11 @@
 import { spawn } from 'child_process';
 
 export type Fork = {
-  chain: string;
   port: number;
   rpcUrl: string;
   pid: number;
-  blockNumber?: number;
-  startedAt?: Date;
+  blockNumber: number;
+  startedAt: Date;
   kill: () => Promise<void>;
   reset: (blockNumber?: number) => Promise<void>;
 }
@@ -14,6 +13,7 @@ export type Fork = {
 export type ForkProxy = {
   port: number;
   fork: Fork;
+  purgeInterval: NodeJS.Timeout;
 }
 
 const networkName = process.argv[3]
@@ -25,9 +25,8 @@ export async function main() {
     process.exit(1);
   }
 
-  // Check if a fork is already running for the given network
-  // start fork
-  // start a proxy to the fork
+  // Check if a fork proxy is already running for the given network
+  
 }
 
 const startFork = () => {

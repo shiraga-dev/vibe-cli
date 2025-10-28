@@ -2,8 +2,10 @@ import type { Chain } from 'viem';
 import defaultConfig from './config'
 import { spawn } from 'child_process';
 import type { Config, ExtendedChain, Plugin } from './types';
+import { resolve } from 'path';
+import { pathToFileURL } from 'url';
 
-export function defineConfig(config: Config): Config {
+export const defineConfig = <T extends Config>(config: T): T => {
   return config;
 }
 
@@ -13,25 +15,21 @@ export function definePlugin(plugin: Plugin): Plugin {
 
 export async function mergeConfig(): Promise<Config> {
   try {
-    const userConfig = (await import(`file://${process.cwd()}/vibe.config`)).default
+    const fileName = "vibe.config"
+    const path = resolve(process.cwd(), fileName)
+    const userConfig = await import(pathToFileURL(path).href).then(mod => mod.default)
     let config = {
       privateKey: userConfig.privateKey ?? defaultConfig.privateKey,
       paths: {
         src: userConfig.paths?.src ?? defaultConfig.paths?.src,
         out: userConfig.paths?.out ?? defaultConfig.paths?.out,
         scripts: userConfig.paths?.scripts ?? defaultConfig.paths?.scripts,
-        deployed: userConfig.paths?.deployed ?? defaultConfig.paths?.deployed
+        deployed: userConfig.paths?.deployed ?? defaultConfig.paths?.deployed,
+        vibe: userConfig.paths?.vibe ?? defaultConfig.paths?.vibe,
       },
-      chains: {} as { [key: string]: Chain },
       contracts: userConfig.contracts ?? {},
       scripts: userConfig.scripts ?? {},
-      compile: userConfig.compile ?? {},
-      deploy: userConfig.deploy ?? {},
-      fork: {
-        privateKey: userConfig.fork?.privateKey ?? defaultConfig.fork?.privateKey,
-        deploy: userConfig.fork?.deploy ?? {},
-        run: userConfig.fork?.run ?? {}
-      },
+      chains: {} as { [key: string]: ExtendedChain },
       optimizer: userConfig.optimizer ?? defaultConfig.optimizer,
       verbosity: userConfig.verbosity ?? defaultConfig.verbosity,
       via_ir: userConfig.via_ir ?? defaultConfig.via_ir
@@ -40,9 +38,9 @@ export async function mergeConfig(): Promise<Config> {
     Object.keys(defaultConfig.chains ?? {}).forEach((c) => {
       if (userConfig.chains === undefined) userConfig.chains = {}
       let userChain = userConfig.chains != undefined && Object.keys(userConfig.chains).includes(c) ? userConfig.chains[c] : null
-      let defaultChain = defaultConfig.chains ? defaultConfig.chains[c as keyof typeof defaultConfig.chains] as Chain : null
+      let defaultChain = defaultConfig.chains ? defaultConfig.chains[c as keyof typeof defaultConfig.chains] : null
       if (userChain) userConfig.chains[c] = { ...defaultChain, ...userChain }
-      else config.chains[c] = defaultChain as ExtendedChain
+      else if (defaultChain) config.chains[c] = defaultChain
     })
 
     return config;
