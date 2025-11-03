@@ -1,16 +1,24 @@
-import { type Config } from ".."
+import { type Config } from "vibe-cli"
 
-export default <Config> {
-  compile: [
-    { name: "Counter", src: "Counter" },
-  ],
-  deploy: {
-    localhost: [
-      { name: "Counter", src: "Counter", args: {} }
-    ]
+export default {
+  contracts: {
+    Counter: {
+      src: "Counter",
+    },
+  },
+  chains: {
+    base: {
+      id: 8453,
+      fork: {
+        deploy: ["Counter"],
+      },
+      deploy: [
+        { name: "Counter", src: "Counter", args: [] },
+      ]
+    },
   },
   scripts: {
     Increment: { src: "Counter" },
     Decrement: { src: "Counter" }
   },
-}
+} satisfies Config;

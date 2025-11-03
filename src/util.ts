@@ -19,13 +19,14 @@ export async function mergeConfig(): Promise<Config> {
     const path = resolve(process.cwd(), fileName)
     const userConfig = await import(pathToFileURL(path).href).then(mod => mod.default)
     let config = {
-      privateKey: userConfig.privateKey ?? defaultConfig.privateKey,
+      wallet: userConfig.wallet,
       paths: {
         src: userConfig.paths?.src ?? defaultConfig.paths?.src,
         out: userConfig.paths?.out ?? defaultConfig.paths?.out,
         scripts: userConfig.paths?.scripts ?? defaultConfig.paths?.scripts,
         deployed: userConfig.paths?.deployed ?? defaultConfig.paths?.deployed,
         vibe: userConfig.paths?.vibe ?? defaultConfig.paths?.vibe,
+        keystores: userConfig.paths?.keystores ?? defaultConfig.paths?.keystores,
       },
       contracts: userConfig.contracts ?? {},
       scripts: userConfig.scripts ?? {},

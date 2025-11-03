@@ -1,18 +1,22 @@
 export default {
-  compile: [
-    { fileName: "Counter", contracts: ["Counter"] },
-  ],
-  deploy: {
-    localhost: [
-      { 
-        fileName: "Counter", contracts: [{ name: "Counter", args: {} }] 
+  contracts: {
+    Counter: {
+      src: "Counter",
+    },
+  },
+  chains: {
+    base: {
+      id: 8453,
+      fork: {
+        deploy: ["Counter"],
       },
-    ]
+      deploy: [
+        { name: "Counter", src: "Counter", args: [] },
+      ]
+    },
   },
   scripts: {
-    localhost: {
-      increment: { fileName: "Counter", script: "Increment"  },
-      decrement: { fileName: "Counter", script: "Decrement"  }
-    }
-  }
+    Increment: { src: "Counter" },
+    Decrement: { src: "Counter" }
+  },
 }

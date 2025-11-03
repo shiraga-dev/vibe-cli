@@ -20,6 +20,7 @@
     "vibe3": "./index.ts"
   },
   "dependencies": {
+    "@ethereumjs/wallet": "^10.0.0",
     "adm-zip": "^0.5.16",
     "follow-redirects": "^1.15.11",
     "inquirer": "^12.10.0",

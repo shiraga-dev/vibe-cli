@@ -59,14 +59,17 @@ export type SolRef<A extends readonly unknown[] = readonly unknown[]> = {
 
 export type WithArgs<A> = { args: A };
 
+export type Hex = `0x${string}` & { readonly __brand: unique symbol };
+
 export interface Config {
-  privateKey?: string;
+  wallet?: string | Hex;
   paths?: {
     src?: string;
     out?: string;
     scripts?: string;
     deployed?: string | string[];
     vibe?: string;
+    keystores?: string;
   };
   contracts?: Record<string, SolRef>;
   scripts?: Record<string, SolRef>;

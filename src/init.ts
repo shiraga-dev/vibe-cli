@@ -120,10 +120,20 @@ export async function main() {
     execSync(`forge install`, { stdio: 'inherit', cwd: path });
   }
 
+  const gitignorePath = `${path}/.gitignore`;
+  let gitignoreContent = '';
+  if (existsSync(gitignorePath)) {
+    gitignoreContent = readFileSync(gitignorePath, 'utf8');
+  }
+  if (!gitignoreContent.includes('./keystores')) {
+    gitignoreContent += `\n\n# Ignore keystores\n./keystores\n`;
+    writeFileSync(gitignorePath, gitignoreContent, 'utf8');
+  }
+
   console.log('✅ Project setup complete!');
 }
 
 main().catch((error) => {
-  console.error('❌ Error during project initialization:', error);
+  console.error('❌ Error during project initialization: ', error);
   process.exit(1);
 });

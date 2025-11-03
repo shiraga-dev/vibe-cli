@@ -12,6 +12,9 @@ async function main() {
     case "init":
       await (await import("./src/init")).main();
       break;
+    case "store":
+      await (await import("./src/store")).main();
+      break;
     case "compile":
       await (await import("./src/compile")).main();
       break;
