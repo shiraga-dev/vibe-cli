@@ -1,6 +1,6 @@
 {
   "name": "vibe-cli",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "type": "module",
   "exports": {
     ".": {
@@ -17,7 +17,7 @@
     "typescript": "^5.9.3"
   },
   "bin": {
-    "vibe3": "./index.ts"
+    "vibe": "./index.ts"
   },
   "dependencies": {
     "@ethereumjs/wallet": "^10.0.0",
