@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { mergeConfig, verbosity, optimizer, via_ir } from './util'
 import { execSync } from 'child_process'
 

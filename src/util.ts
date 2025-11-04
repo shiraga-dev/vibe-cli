@@ -1,4 +1,5 @@
-import type { Chain } from 'viem';
+#!/usr/bin/env node
+
 import defaultConfig from './config'
 import { spawn } from 'child_process';
 import type { Config, ExtendedChain, Plugin } from './types';

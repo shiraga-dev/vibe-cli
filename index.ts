@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import foundry from "./src/foundry";
 
 export { type Config, type ExtendedChain, type SolRef, type Plugin } from "./src/types";

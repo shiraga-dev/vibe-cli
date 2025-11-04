@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
 

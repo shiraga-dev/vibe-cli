@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { curl } from './util.js'
 
 const chainKey = process.argv[3] as string

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import type { Config, ExtendedChain } from './types';
 
 export default <Config> {

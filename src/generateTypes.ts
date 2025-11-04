@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { mergeConfig } from './util'
 import { readFileSync } from 'fs';
 import type { Abi } from 'abitype'
