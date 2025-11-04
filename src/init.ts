@@ -114,11 +114,14 @@ export async function main() {
     [submodule "lib/forge-std"]
       path = lib/forge-std
       url = https://github.com/foundry-rs/forge-std
-    `;
+    [submodule "lib/vibe-core"]
+	    path = lib/vibe-core
+	    url = https://github.com/shiraga-dev/vibe-core
+  `;
   writeFileSync(gitmodulesPath, gitmodulesContent.trim(), 'utf8');
 
   if (!existsSync(`${path}/lib/forge-std`)) {
-    console.log('🔄 Running forge install...');
+    console.log('⏳ Running forge install...');
     execSync(`forge install`, { stdio: 'inherit', cwd: path });
   }
 

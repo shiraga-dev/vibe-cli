@@ -1,8 +1,5 @@
-#!/usr/bin/env node
-
 import { execSync } from 'child_process';
 import { mergeConfig } from "./util";
-import { argv } from 'bun';
 
 const config = await mergeConfig()
 

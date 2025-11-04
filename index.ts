@@ -8,22 +8,24 @@ export { defineConfig, definePlugin, mergeConfig, curl } from "./src/util";
 const cmd = process.argv[2]
 
 async function main() {
-  await foundry();
 
   switch (cmd) {
     case "init":
       await (await import("./src/init")).main();
       break;
     case "store":
+      await foundry();
       await (await import("./src/store")).main();
       break;
     case "compile":
+      await foundry();
       await (await import("./src/compile")).main();
       break;
     case "generate":
       await (await import("./src/generateTypes")).main();
       break;
     case "check":
+      await foundry();
       await (await import("./src/check")).main();
       break;
     case "curl":

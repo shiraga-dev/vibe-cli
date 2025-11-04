@@ -1,33 +1,37 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {Script, console2} from "forge-std/Script.sol";
+import {Script} from "vibe-core/Script.sol";
 import "../src/Counter.sol";
 
 contract Increment is Script {
-  
-  function run() external {
-    uint privateKey = vm.envUint("DEV_PRIVATE_KEY");
+  function run() external broadcast {
     address addr = vm.envAddress("Counter");
-
-    vm.startBroadcast(privateKey);
-
     Counter(addr).increment();
-
-    vm.stopBroadcast();
   }
 }
 
 contract Decrement is Script {
-  
-  function run() external {
-    uint privateKey = vm.envUint("DEV_PRIVATE_KEY");
+  function run() external broadcast {
     address addr = vm.envAddress("Counter");
-
-    vm.startBroadcast(privateKey);
-
     Counter(addr).decrement();
+  }
+}
 
-    vm.stopBroadcast();
+contract Add is Script {
+  function args(uint value) public {}
+  function run() external broadcast {
+    address addr = vm.envAddress("Counter");
+    uint value = vm.envUint("ARG0");
+    Counter(addr).add(value);
+  }
+}
+
+contract Subtract is Script {
+  function args(uint value) public {}
+  function run() external broadcast {
+    address addr = vm.envAddress("Counter");
+    uint value = vm.envUint("ARG0");
+    Counter(addr).subtract(value);
   }
 }

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import { execSync } from 'child_process'
+import { execSync, spawn } from 'child_process'
 import { homedir, tmpdir } from 'os';
 import path from 'path';
 import { https } from 'follow-redirects';
-import { existsSync, mkdirSync, createWriteStream, unlinkSync } from 'fs';
+import { existsSync, mkdirSync, createWriteStream, unlinkSync, readdirSync } from 'fs';
 import AdmZip from 'adm-zip';
 import inquirer from "inquirer";
 
@@ -60,48 +60,69 @@ function extractExecutables(zipPath: string, targetDir: string): void {
 }
 
 export default async function (): Promise<boolean> {
-  if (checkFoundry()) {
-    return true;
-  }
+  return new Promise(async (resolve) => {
+    if (checkFoundry()) {
+      resolve(true);
+      return;
+    }
+    
+    const shell = process.env.SHELL || process.env.ComSpec
+    const isBash = shell && shell.toLowerCase().includes('bash') || shell && shell.toLowerCase().includes('zsh') || shell && shell.toLowerCase().includes('sh');
+    const isCmd = shell && shell.toLowerCase().includes('cmd') || shell && shell.toLowerCase().includes('comspec') && !shell.toLowerCase().includes('powershell');
 
-  const { install } = await inquirer.prompt([
-    {
-      name: "install",
-      type: "confirm",
-      message: "Foundry is not installed. Would you like to install it now?",
-      default: true,
-    },
-  ]);
+    const { install } = await inquirer.prompt([
+      {
+        name: "install",
+        type: "confirm",
+        message: "Foundry is not installed. Would you like to install it now?",
+        default: true,
+      },
+    ]);
 
-  if (!install) {
-    console.log('❌ Installation aborted.');
-    return false;
-  }
+    if (!install) {
+      console.log('❌ Installation aborted.');
+      resolve(false);
+      return;
+    }
 
-  if (!existsSync(installDir)) mkdirSync(installDir, { recursive: true });
+    console.log('📦 Downloading Foundry...');
 
-  console.log('📦 Downloading Foundry...');
-  await download(zipUrl, zipPath);
+    if (isBash) {
+      let path = '';
 
-  console.log('📂 Extracting executables...');
-  extractExecutables(zipPath, installDir);
-
-  console.log('✅ Foundry installed to:', installDir);
-
-  cleanup();
-  
-  const currentPath = process.env.PATH || '';
-  if (!currentPath.includes(installDir)) {
-    process.env.PATH = `${installDir}${path.delimiter}${currentPath}`;
-    console.log(`🔧 Updated PATH to include: ${installDir}`);
-  }
-
-  try {
-    execSync(`forge --version`, { stdio: 'inherit' });
-  } catch {
-    console.warn('⚠️ Could not run forge. Is the path set?');
-    return false;
-  }
-
-  return true;
+      const child = spawn('bash', ['-c', '(curl -sSf -L https://foundry.paradigm.xyz && echo echo \"FOUNDRY_NEW_PATH:\\${FOUNDRY_BIN_DIR}\") | bash'], {
+        stdio: 'inherit', env: { ...process.env }
+      });
+      child.on('close', (code) => {
+        if (code !== 0) {
+          console.error(`❌ Foundry installation failed with code ${code}`);
+          resolve(false);
+          return;
+        }
+        execSync('foundryup -i nightly', { stdio: 'inherit' });
+        try {
+          execSync(`forge --version`, { stdio: 'inherit' });
+        } catch {
+          console.warn('⚠️ Could not run forge. Is the path set?');
+          resolve(false);
+          return;
+        }
+        resolve(true);
+        return;
+      });
+    }
+    else if (isCmd) {
+      if (!existsSync(installDir)) mkdirSync(installDir, { recursive: true });
+      await download(zipUrl, zipPath);
+      console.log('📂 Extracting executables...');
+      extractExecutables(zipPath, installDir);
+      console.log(`✅ Foundry installed to: ${installDir}`);
+      cleanup();
+      const currentPath = process.env.PATH || '';
+      if (!currentPath.includes(installDir)) {
+        process.env.PATH = `${installDir}${path.delimiter}${currentPath}`;
+        console.log(`🔧 Updated PATH to include: ${installDir}`);
+      }
+    }
+  });
 }
