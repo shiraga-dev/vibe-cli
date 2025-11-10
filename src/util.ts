@@ -1,24 +1,15 @@
 #!/usr/bin/env node
 
-import defaultConfig from './config'
+import defaultConfig from './config.ts';
 import { spawn } from 'child_process';
-import type { Config, ExtendedChain, Plugin } from './types';
+import type { Config, ExtendedChain } from 'vibe-core';
 import { resolve } from 'path';
 import { pathToFileURL } from 'url';
 
-export const defineConfig = <T extends Config>(config: T): T => {
-  return config;
-}
-
-export function definePlugin(plugin: Plugin): Plugin {
-  return plugin;
-}
-
 export async function mergeConfig(): Promise<Config> {
   try {
-    const fileName = "vibe.config"
-    const path = resolve(process.cwd(), fileName)
-    const userConfig = await import(pathToFileURL(path).href).then(mod => mod.default)
+    const path = resolve(process.cwd(), "vibe.config.ts") || resolve(process.cwd(), "vibe.config.js")
+    const userConfig = await import(pathToFileURL(path).href).then(mod => mod.default);
     let config = {
       wallet: userConfig.wallet,
       paths: {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { mergeConfig, verbosity, optimizer, via_ir } from './util'
+import { mergeConfig, verbosity, optimizer, via_ir } from './util.ts'
 import { execSync } from 'child_process'
 
 export async function main() {

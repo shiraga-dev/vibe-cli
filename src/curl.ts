@@ -1,6 +1,4 @@
-#!/usr/bin/env node
-
-import { curl } from './util.js'
+import { curl } from './util.ts'
 
 const chainKey = process.argv[3] as string
 const command = process.argv[4] as string

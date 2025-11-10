@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
-import { mergeConfig } from './util'
+import { mergeConfig } from './util.ts';
 import { readFileSync } from 'fs';
-import type { Abi } from 'abitype'
+import type { Abi, AbiFunction } from 'abitype'
+import type { SolRef } from 'vibe-core';
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
 
 export async function main() {
   const config = await mergeConfig()
@@ -44,18 +46,19 @@ export async function main() {
 
   let scriptArgs = `export type ScriptArgs<Script> = {\n`
   if (config.scripts) Object.entries(config.scripts).forEach(([name, solRef]) => {
-    const path = `${config.paths?.out}/${solRef.src}.s.sol/${name}.json`
+    const path = `${config.paths?.out}/${(solRef as SolRef).src}.s.sol/${name}.json`
     try {
       const json = JSON.parse(readFileSync(path, 'utf8'))
       const abi = json.abi as Abi
 
       scriptArgs += `  ${name}: [\n`
-      const run = abi.filter(item => item.type === 'function').find(item => item.name === 'args')
-      if (run) {
-        run.inputs.map((input, index) => input.name || `arg${index}`).forEach((paramName, index) => {
-          scriptArgs += `    ${paramName}: AbiParameterToPrimitiveType<${JSON.stringify(run.inputs[index])}>,\n`
-        })
-      }
+      const vars: AbiFunction[] = abi.filter(item => item.type === 'function' && item.name !== 'run' && item.name !== 'IS_SCRIPT') as AbiFunction[];
+      vars.forEach(fn => {
+        if (fn.outputs.length > 0) {
+          const outputParam = fn.outputs[0];
+          scriptArgs += `    ${fn.name}: AbiParameterToPrimitiveType<${JSON.stringify(outputParam)}>,\n`
+        }
+      })
       scriptArgs += `  ]\n`
     } catch (e) {
       console.error(`Failed to read script artifact for ${name} at ${path}: ${e}`);
@@ -64,7 +67,8 @@ export async function main() {
   })
   scriptArgs += `}[Script]`
 
-  const outPath = `${config.paths?.vibe}/types.d.ts`
-  require('fs').writeFileSync(outPath, output + constructorArgs + functionArgs + scriptArgs);
+  const outPath = `${config.paths?.vibe}/types.d.ts`;
+  if (!existsSync(config.paths?.vibe || '')) mkdirSync(config.paths?.vibe || '');
+  writeFileSync(outPath, output + constructorArgs + functionArgs + scriptArgs);
   console.log(`Generated types written to ${outPath}`);
 }

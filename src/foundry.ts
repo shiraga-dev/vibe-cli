@@ -3,7 +3,8 @@
 import { execSync, spawn } from 'child_process'
 import { homedir, tmpdir } from 'os';
 import path from 'path';
-import { https } from 'follow-redirects';
+import followRedirects from 'follow-redirects';
+const { https } = followRedirects;
 import { existsSync, mkdirSync, createWriteStream, unlinkSync, readdirSync } from 'fs';
 import AdmZip from 'adm-zip';
 import inquirer from "inquirer";
@@ -88,8 +89,6 @@ export default async function (): Promise<boolean> {
     console.log('📦 Downloading Foundry...');
 
     if (isBash) {
-      let path = '';
-
       const child = spawn('bash', ['-c', '(curl -sSf -L https://foundry.paradigm.xyz && echo echo \"FOUNDRY_NEW_PATH:\\${FOUNDRY_BIN_DIR}\") | bash'], {
         stdio: 'inherit', env: { ...process.env }
       });
@@ -103,7 +102,7 @@ export default async function (): Promise<boolean> {
         try {
           execSync(`forge --version`, { stdio: 'inherit' });
         } catch {
-          console.warn('⚠️ Could not run forge. Is the path set?');
+          console.warn('⚠︎ Could not run forge. Is the path set?');
           resolve(false);
           return;
         }
@@ -116,13 +115,22 @@ export default async function (): Promise<boolean> {
       await download(zipUrl, zipPath);
       console.log('📂 Extracting executables...');
       extractExecutables(zipPath, installDir);
-      console.log(`✅ Foundry installed to: ${installDir}`);
+      console.log(`✔ Foundry installed to: ${installDir}`);
       cleanup();
       const currentPath = process.env.PATH || '';
       if (!currentPath.includes(installDir)) {
         process.env.PATH = `${installDir}${path.delimiter}${currentPath}`;
         console.log(`🔧 Updated PATH to include: ${installDir}`);
       }
+      try {
+        execSync(`forge --version`, { stdio: 'inherit' });
+      } catch {
+        console.warn('⚠︎ Could not run forge. Please ensure that the following directory is in your system PATH:');
+        console.warn(`   ${installDir}`);
+        resolve(false);
+        return;
+      }
+      resolve(true);
     }
   });
 }

@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { mergeConfig } from "./util";
+import { mergeConfig } from "./util.ts";
 
 const config = await mergeConfig()
 

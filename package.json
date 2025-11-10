@@ -1,21 +1,23 @@
 {
   "name": "vibe-cli",
-  "version": "0.14.0",
+  "version": "0.14.49",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
     }
   },
   "private": false,
   "devDependencies": {
-    "@types/bun": "latest",
     "@types/adm-zip": "^0.5.7",
+    "@types/bun": "latest",
     "@types/follow-redirects": "^1.14.4"
   },
   "peerDependencies": {
     "typescript": "^5.9.3",
-    "vibe-core": "^0.1.5"
+    "vibe-core": "^0.1.11"
   },
   "bin": {
     "vibe": "./index.ts"
@@ -26,5 +28,11 @@
     "follow-redirects": "^1.15.11",
     "inquirer": "^12.10.0",
     "viem": "^2.38.4"
-  }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "template",
+    "template_configs"
+  ]
 }

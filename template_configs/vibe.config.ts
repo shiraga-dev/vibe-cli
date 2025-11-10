@@ -1,4 +1,4 @@
-import { type Config } from "vibe-cli"
+import { type Config } from "vibe-core"
 
 export default {
   contracts: {
@@ -6,19 +6,18 @@ export default {
       src: "Counter",
     },
   },
+  scripts: {
+    Increment: { src: "Counter" },
+    Decrement: { src: "Counter" },
+    Add: { src: "Counter" },
+    Subtract: { src: "Counter" },
+  },
   chains: {
     base: {
-      id: 8453,
       fork: {
         deploy: ["Counter"],
       },
-      deploy: [
-        { name: "Counter", src: "Counter", args: [] },
-      ]
+      deploy: ["Counter"],
     },
-  },
-  scripts: {
-    Increment: { src: "Counter" },
-    Decrement: { src: "Counter" }
   },
 } satisfies Config;

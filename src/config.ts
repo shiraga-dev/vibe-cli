@@ -1,8 +1,6 @@
-#!/usr/bin/env node
+import type { Config, ExtendedChain } from 'vibe-core';
 
-import type { Config, ExtendedChain } from './types';
-
-export default <Config> {
+export default {
   paths: {
     src: 'src',
     out: 'out',
@@ -20,4 +18,4 @@ export default <Config> {
   },
   verbosity: 4,
   via_ir: true,
-};
+} satisfies Config;
